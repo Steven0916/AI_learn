@@ -1,1 +1,816 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI & 機器學習 / 深度學習名詞圖鑑</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons CDN for slick SVG icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    /* 動畫效果 */
+    @keyframes modalPop {
+      0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .animate-modal {
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
+  <!-- 頂部導覽列 -->
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-200">
+          <i class="ph-bold ph-brain text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-slate-900 tracking-tight leading-tight">AI 專有名詞圖鑑</h1>
+          <p class="text-xs text-slate-500">機器學習 & 深度學習 · 白話圖解指南</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+          <i class="ph-fill ph-sparkle mr-1"></i> 共 <span id="total-count" class="mx-0.5 font-bold">0</span> 個名詞
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero 區域與搜尋控制 -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="text-center max-w-2xl mx-auto mb-8">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
+        用「看得懂的白話」探索 AI 核心名詞
+      </h2>
+      <p class="text-slate-600 text-sm sm:text-base">
+        不論是過擬合、反向傳播還是 Transformer，點選卡片即可獲得<span class="text-indigo-600 font-semibold">生活化比喻</span>與<span class="text-indigo-600 font-semibold">直觀結構圖解</span>！
+      </p>
+    </div>
+
+    <!-- 搜尋與類別篩選 -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 mb-8 space-y-4">
+      <div class="relative">
+        <i class="ph ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl"></i>
+        <input 
+          type="text" 
+          id="search-input" 
+          placeholder="搜尋中文名稱、英文名詞、或生活比喻關鍵字（例如：CNN, 梯度, 過擬合...）"
+          class="w-full pl-11 pr-4 py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+        >
+      </div>
+
+      <!-- 分類標籤按鈕 -->
+      <div class="flex flex-wrap gap-2 pt-1" id="category-filters">
+        <button data-cat="all" class="category-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-indigo-600 text-white shadow-sm">
+          全部名詞
+        </button>
+        <button data-cat="ml-paradigm" class="category-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">
+          ML 學習範式
+        </button>
+        <button data-cat="ml-train" class="category-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">
+          ML 訓練與評估
+        </button>
+        <button data-cat="dl-arch" class="category-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">
+          DL 核心架構
+        </button>
+        <button data-cat="dl-train" class="category-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">
+          DL 演算法與優化
+        </button>
+      </div>
+    </div>
+
+    <!-- 卡片列表格狀區域 -->
+    <div id="cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <!-- 卡片由 JS 動態注入 -->
+    </div>
+
+    <!-- 無搜尋結果提示 -->
+    <div id="empty-state" class="hidden text-center py-16">
+      <div class="w-16 h-16 mx-auto mb-3 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-3xl">
+        <i class="ph ph-mask-sad"></i>
+      </div>
+      <h3 class="text-base font-semibold text-slate-800">找不到相符的名詞</h3>
+      <p class="text-sm text-slate-500 mt-1">請嘗試輸入其他關鍵字，如「損失函數」、「ReLU」或「Transformer」。</p>
+    </div>
+  </main>
+
+  <!-- 詳情互動視窗 (Modal) -->
+  <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-modal">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div class="flex items-center space-x-3">
+          <span id="modal-badge" class="px-2.5 py-1 rounded-md text-xs font-semibold"></span>
+          <span id="modal-en" class="text-xs font-mono font-medium text-slate-500"></span>
+        </div>
+        <button id="modal-close-btn" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors">
+          <i class="ph ph-x text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body (可滾動) -->
+      <div class="p-6 overflow-y-auto custom-scrollbar space-y-6">
+        <div>
+          <h3 id="modal-title" class="text-2xl font-bold text-slate-900 mb-1"></h3>
+          <p id="modal-summary" class="text-slate-600 text-sm font-medium leading-relaxed"></p>
+        </div>
+
+        <!-- 視覺化圖示圖解區 -->
+        <div class="bg-slate-900 text-white rounded-2xl p-4 shadow-inner">
+          <div class="flex items-center justify-between mb-3 text-xs text-slate-400 border-b border-slate-800 pb-2">
+            <span class="flex items-center font-medium"><i class="ph-bold ph-chart-polar mr-1.5 text-indigo-400"></i> 原理圖解示意</span>
+            <span id="modal-diagram-note" class="text-[11px] text-slate-500 font-mono">VISUAL EXPLANATION</span>
+          </div>
+          <div id="modal-diagram-container" class="flex items-center justify-center min-h-[160px] py-2">
+            <!-- 向量 SVG 圖示由 JS 動態生成 -->
+          </div>
+        </div>
+
+        <!-- 白話生活比喻 -->
+        <div class="bg-amber-50/80 border border-amber-200/70 rounded-2xl p-4">
+          <div class="flex items-center text-amber-900 font-bold text-sm mb-1.5">
+            <i class="ph-fill ph-lightbulb text-amber-500 mr-2 text-lg"></i> 生活化比喻（一句話秒懂）
+          </div>
+          <p id="modal-metaphor" class="text-amber-950/80 text-sm leading-relaxed"></p>
+        </div>
+
+        <!-- 詳細深入重點 -->
+        <div class="space-y-3">
+          <h4 class="text-sm font-bold text-slate-800 flex items-center">
+            <i class="ph-fill ph-article text-indigo-600 mr-2"></i> 技術核心觀念
+          </h4>
+          <ul id="modal-points" class="space-y-2 text-sm text-slate-600 list-disc list-inside bg-slate-50 p-4 rounded-xl border border-slate-100">
+            <!-- 動態注入清單 -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-xs text-slate-500">
+        <span>按 <kbd class="px-1.5 py-0.5 rounded bg-slate-200 font-mono text-[11px]">ESC</kbd> 或點擊外部可關閉</span>
+        <button id="modal-confirm-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-all shadow-sm">
+          我知道了！
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 頁尾 -->
+  <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-400">
+    <p>機器學習與深度學習名詞圖鑑 · 互動學習界面</p>
+  </footer>
+
+  <script>
+    // 完整的專有名詞資料庫
+    const GLOSSARY_DATA = [
+      {
+        id: "supervised-learning",
+        title: "監督式學習",
+        en: "Supervised Learning",
+        category: "ml-paradigm",
+        categoryName: "ML 學習範式",
+        badgeColor: "bg-blue-100 text-blue-700",
+        icon: "ph-check-circle",
+        shortDesc: "有題目且有「標準答案」的學習方式，訓練模型透過題目預測正解。",
+        metaphor: "就像學生在做一本附有完整詳解解答的模擬題庫，寫錯了馬上看解答訂正，直到下次能做對。",
+        points: [
+          "輸入包含特徵（題目 $X$）與標籤（解答 $y$）。",
+          "主要任務可分為『分類（預測類別）』與『迴歸（預測連續數字）』。",
+          "常見應用：垃圾郵件過濾、人臉識別、房價預測。"
+        ],
+        svgType: "supervised"
+      },
+      {
+        id: "unsupervised-learning",
+        title: "非監督式學習",
+        en: "Unsupervised Learning",
+        category: "ml-paradigm",
+        categoryName: "ML 學習範式",
+        badgeColor: "bg-emerald-100 text-emerald-700",
+        icon: "ph-circles-three",
+        shortDesc: "沒有任何答案標籤，模型自行從資料堆中挖掘相似性與規律。",
+        metaphor: "把你丟到一個裝滿各國無標籤硬幣的箱子裡，你不知道幣種，但能根據顏色、大小、圖案自動分堆。",
+        points: [
+          "不需要標籤（Label），降低大量人工標記的成本。",
+          "主要任務包含分群（Clustering）與降維（Dimensionality Reduction）。",
+          "常見應用：顧客族群輪廓劃分、購物籃推薦、異常交易偵測。"
+        ],
+        svgType: "unsupervised"
+      },
+      {
+        id: "reinforcement-learning",
+        title: "強化學習",
+        en: "Reinforcement Learning (RL)",
+        category: "ml-paradigm",
+        categoryName: "ML 學習範式",
+        badgeColor: "bg-purple-100 text-purple-700",
+        icon: "ph-game-controller",
+        shortDesc: "讓智慧體在環境中透過嘗試錯誤，以賺取最高「累積獎勵」為目標。",
+        metaphor: "像在教小狗握手：做對了給骨頭吃（獎勵），做錯了不給（懲罰），久了小狗就知道怎麼做最有肉吃。",
+        points: [
+          "核心四要素：智慧體（Agent）、環境（Environment）、行動（Action）、獎勵（Reward）。",
+          "不靠靜態資料，而是靠動態與環境互動反饋更新策略。",
+          "常見應用：圍棋 AlphaGo、自動駕駛決策、機器人平衡控制。"
+        ],
+        svgType: "rl"
+      },
+      {
+        id: "overfitting",
+        title: "過擬合",
+        en: "Overfitting",
+        category: "ml-train",
+        categoryName: "ML 訓練與評估",
+        badgeColor: "bg-rose-100 text-rose-700",
+        icon: "ph-warning-octagon",
+        shortDesc: "死記硬背訓練資料的細節甚至雜訊，導致遇到沒看過的新考題反而答得一塌糊塗。",
+        metaphor: "學生把歷屆考古題的選項順序（甚至包括印錯的污點）全背下來，考了 100 分；但正式大考題目稍變就直接不及格。",
+        points: [
+          "表現為：訓練集損失極低、準確率超高，但驗證集/測試集表現極差。",
+          "原因通常是模型太複雜、資料量太少或訓練時間過長。",
+          "解方：增加資料量、使用 Dropout、L1/L2 正則化或提早終止訓練（Early Stopping）。"
+        ],
+        svgType: "overfitting"
+      },
+      {
+        id: "gradient-descent",
+        title: "梯度下降",
+        en: "Gradient Descent",
+        category: "ml-train",
+        categoryName: "ML 訓練與評估",
+        badgeColor: "bg-amber-100 text-amber-800",
+        icon: "ph-trend-down",
+        shortDesc: "尋找最佳模型參數的核心演算法，一步步朝著錯誤率降低最快的方向調整。",
+        metaphor: "像矇著眼睛的登山者在濃霧大山中，每次用腳探測四周，朝最陡峭向下的方向邁出一小步，直到走到最低的山谷。",
+        points: [
+          "『梯度』是斜率最大的方向，梯度下降是往負方向前進。",
+          "學習率（Learning Rate）決定每一步跨出的大小；太小走很慢，太大可能摔出山谷。",
+          "常見衍生變形：SGD（隨機梯度）、Adam（自適應學習率優化器）。"
+        ],
+        svgType: "gradient"
+      },
+      {
+        id: "confusion-matrix",
+        title: "混淆矩陣",
+        en: "Confusion Matrix",
+        category: "ml-train",
+        categoryName: "ML 訓練與評估",
+        badgeColor: "bg-indigo-100 text-indigo-700",
+        icon: "ph-table",
+        shortDesc: "用表格呈現預測結果與真實結果的交叉比對，全面拆解預測細節。",
+        metaphor: "像醫院的健康檢查報告審查表：抓出確實有病的人幾位、沒病誤判有病幾位、以及不幸漏網的病患有幾位。",
+        points: [
+          "四大核心：TP（真陽）、FP（偽陽/誤報）、TN（真陰）、FN（偽陰/漏報）。",
+          "由此衍生出 Accuracy（準確率）、Precision（精確率）、Recall（召回率）。",
+          "在資料極不平衡的場景（如罕見疾病偵測），單看 Accuracy 會嚴重失真。"
+        ],
+        svgType: "matrix"
+      },
+      {
+        id: "activation-function",
+        title: "激活函數",
+        en: "Activation Function (ReLU/Sigmoid)",
+        category: "dl-train",
+        categoryName: "DL 演算法與優化",
+        badgeColor: "bg-teal-100 text-teal-700",
+        icon: "ph-lightning",
+        shortDesc: "為神經網路注入「非線性」能力的靈魂，沒有它，深層網路只是個簡單的線性方程式。",
+        metaphor: "就像大腦神經元的開關閾值：刺激太弱就不放電，刺激超過臨界值才啟動傳遞訊號。",
+        points: [
+          "若沒有激活函數，無論疊多少層網路，數學上都等同於單一線性層。",
+          "ReLU（大於0原樣輸出，小於0變0）是目前最通用且計算最快的神經開關。",
+          "Sigmoid / Softmax 常放在最後一層用於將輸出轉化為機率分佈。"
+        ],
+        svgType: "activation"
+      },
+      {
+        id: "backpropagation",
+        title: "反向傳播",
+        en: "Backpropagation",
+        category: "dl-train",
+        categoryName: "DL 演算法與優化",
+        badgeColor: "bg-orange-100 text-orange-700",
+        icon: "ph-arrow-counter-clockwise",
+        shortDesc: "計算每一層神經元對最終錯誤的責任比例，並倒回去修正權重的方法。",
+        metaphor: "公司專案出了大包，總經理從成果向上一層層問責：這份錯誤有多少是因為業務、多少是因為工程師，再針對每個人扣考績改進。",
+        points: [
+          "核心數學工具是微積分的『連鎖律（Chain Rule）』。",
+          "訊號正向計算答案，誤差則反向算回梯度。",
+          "是讓多層神經網路能夠大規模自主訓練的關鍵基石。"
+        ],
+        svgType: "backprop"
+      },
+      {
+        id: "cnn",
+        title: "卷積神經網路",
+        en: "CNN (Convolutional Neural Network)",
+        category: "dl-arch",
+        categoryName: "DL 核心架構",
+        badgeColor: "bg-cyan-100 text-cyan-800",
+        icon: "ph-image",
+        shortDesc: "專為影像處理設計的網路，利用滑動小濾鏡掃描圖形，捕捉邊緣與形狀特徵。",
+        metaphor: "拿著一個放大鏡，從左到右、從上到下掃視照片：第一層看出橫線斜線，第二層拼出眼睛鼻子，第三層認出整張貓臉。",
+        points: [
+          "卷積層（Convolution）：用濾波器（Filter）滑動計算局部特徵，共享權重。",
+          "池化層（Pooling）：把影像縮小抽樣，保留最顯著特徵並節省運算。",
+          "廣泛應用：自駕車辨識行人、醫學影像病變判別、人臉辨識。"
+        ],
+        svgType: "cnn"
+      },
+      {
+        id: "rnn-lstm",
+        title: "循環神經網絡 / LSTM",
+        en: "RNN & LSTM",
+        category: "dl-arch",
+        categoryName: "DL 核心架構",
+        badgeColor: "bg-fuchsia-100 text-fuchsia-700",
+        icon: "ph-wave-sine",
+        shortDesc: "具有時間記憶功能的網路，能理解前後連貫的語句或時間序列資料。",
+        metaphor: "在讀一本小說，你讀第 10 頁時腦中還記得第 1 頁主角的名字，而不是讀一個字就忘光前面。",
+        points: [
+          "傳統 RNN 容易得『健忘症』（梯度消失問題），記不住太長的句子。",
+          "LSTM 引入『遺忘門、輸入門、輸出門』，主動挑選哪些記憶要留、哪些要忘。",
+          "應用：語音轉文字、股市時間序列預測、機器翻譯早期架構。"
+        ],
+        svgType: "rnn"
+      },
+      {
+        id: "transformer",
+        title: "Transformer 架構",
+        en: "Transformer & Self-Attention",
+        category: "dl-arch",
+        categoryName: "DL 核心架構",
+        badgeColor: "bg-violet-100 text-violet-700",
+        icon: "ph-sparkle",
+        shortDesc: "徹底改變 AI 領域的劃時代架構，靠「自注意力機制」一眼縱觀全局上下文。",
+        metaphor: "開全體會議時，發言人一講到某關鍵字，台下所有相關成員同時互看產生關聯，不用排隊一個個打小報告。",
+        points: [
+          "拋棄了傳統 RNN 慢速的逐字循序處理，實現全句子超大規模平行運算。",
+          "自注意力（Self-Attention）讓每個字都能同時衡量與整篇文章所有字詞的關聯度。",
+          "現今所有頂尖大語言模型（ChatGPT、Claude、Gemini 等）的共同基礎骨幹。"
+        ],
+        svgType: "transformer"
+      },
+      {
+        id: "dropout",
+        title: "丟棄法 (Dropout)",
+        en: "Dropout Regularization",
+        category: "dl-train",
+        categoryName: "DL 演算法與優化",
+        badgeColor: "bg-slate-150 text-slate-700 bg-slate-200",
+        icon: "ph-user-minus",
+        shortDesc: "訓練時隨機讓一部分神經元放假靜音，避免過度依賴某些強勢節點。",
+        metaphor: "足球隊平常練習時，教練隨機抽掉幾個主力球員不准上場，逼迫替補球員也能獨當一面，整隊實力更平均且抗打擊。",
+        points: [
+          "屬於深度學習中極為直觀有效的正則化（Regularization）技巧。",
+          "強迫網路學習更多樣化的特徵，大幅降低神經元之間的共同依賴與過擬合。",
+          "只在訓練（Training）階段隨機關閉神經元，正式推論預測時會全部啟用。"
+        ],
+        svgType: "dropout"
+      }
+    ];
+
+    // SVG 圖形生成工廠：根據 svgType 產生清晰的原理圖解
+    function generateDiagramSVG(type) {
+      switch(type) {
+        case "supervised":
+          return `
+            <svg class="w-full max-w-md h-36" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="20" y="25" width="80" height="75" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+              <text x="60" y="55" fill="#f8fafc" font-size="12" font-weight="bold" text-anchor="middle">題目特徵 (X)</text>
+              <text x="60" y="75" fill="#94a3b8" font-size="10" text-anchor="middle">+ 正確標籤 (y)</text>
+              <path d="M105 62H150" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 4"/>
+              <polygon points="155,62 147,57 147,67" fill="#38bdf8"/>
+              <rect x="160" y="20" width="90" height="85" rx="12" fill="#312e81" stroke="#818cf8" stroke-width="2"/>
+              <text x="205" y="55" fill="#e0e7ff" font-size="13" font-weight="bold" text-anchor="middle">模型學習</text>
+              <text x="205" y="75" fill="#a5b4fc" font-size="10" text-anchor="middle">比對誤差修權重</text>
+              <path d="M255 62H295" stroke="#38bdf8" stroke-width="3"/>
+              <polygon points="300,62 292,57 292,67" fill="#38bdf8"/>
+              <rect x="305" y="25" width="80" height="75" rx="10" fill="#064e3b" stroke="#34d399" stroke-width="2"/>
+              <text x="345" y="55" fill="#ecfdf5" font-size="12" font-weight="bold" text-anchor="middle">預測能力</text>
+              <text x="345" y="75" fill="#6ee7b7" font-size="10" text-anchor="middle">準確辨識新題目</text>
+            </svg>
+          `;
+        case "unsupervised":
+          return `
+            <svg class="w-full max-w-md h-36" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(15, 15)">
+                <circle cx="20" cy="20" r="7" fill="#f43f5e"/>
+                <circle cx="45" cy="55" r="7" fill="#3b82f6"/>
+                <circle cx="30" cy="80" r="7" fill="#10b981"/>
+                <circle cx="65" cy="25" r="7" fill="#3b82f6"/>
+                <circle cx="70" cy="75" r="7" fill="#f43f5e"/>
+                <text x="50" y="105" fill="#94a3b8" font-size="11" text-anchor="middle">雜亂無標記資料</text>
+              </g>
+              <path d="M120 65H170" stroke="#a855f7" stroke-width="3" stroke-dasharray="3 3"/>
+              <polygon points="175,65 167,60 167,70" fill="#a855f7"/>
+              <rect x="180" y="30" width="75" height="65" rx="10" fill="#2e1065" stroke="#c084fc" stroke-width="2"/>
+              <text x="217" y="65" fill="#f3e8ff" font-size="12" font-weight="bold" text-anchor="middle">自動分群</text>
+              <path d="M260 65H300" stroke="#a855f7" stroke-width="3"/>
+              <polygon points="305,65 297,60 297,70" fill="#a855f7"/>
+              <g transform="translate(305, 10)">
+                <ellipse cx="30" cy="30" rx="20" ry="15" fill="#f43f5e" fill-opacity="0.2" stroke="#f43f5e" stroke-dasharray="2 2"/>
+                <circle cx="28" cy="28" r="4" fill="#f43f5e"/>
+                <circle cx="34" cy="32" r="4" fill="#f43f5e"/>
+                <ellipse cx="65" cy="70" rx="22" ry="18" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-dasharray="2 2"/>
+                <circle cx="60" cy="68" r="4" fill="#3b82f6"/>
+                <circle cx="70" cy="73" r="4" fill="#3b82f6"/>
+                <text x="50" y="108" fill="#cbd5e1" font-size="11" text-anchor="middle">群集1 / 群集2</text>
+              </g>
+            </svg>
+          `;
+        case "rl":
+          return `
+            <svg class="w-full max-w-md h-36" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="30" y="40" width="90" height="50" rx="10" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/>
+              <text x="75" y="68" fill="#e0e7ff" font-size="12" font-weight="bold" text-anchor="middle">智慧體 (Agent)</text>
+              <rect x="270" y="40" width="90" height="50" rx="10" fill="#022c22" stroke="#34d399" stroke-width="2"/>
+              <text x="315" y="68" fill="#d1fae5" font-size="12" font-weight="bold" text-anchor="middle">環境 (Env)</text>
+              <path d="M125 48 C 170 20, 220 20, 265 48" stroke="#38bdf8" stroke-width="2.5" fill="none"/>
+              <polygon points="268,50 258,45 264,40" fill="#38bdf8"/>
+              <text x="195" y="24" fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle">採取動作 (Action) →</text>
+              <path d="M265 80 C 220 110, 170 110, 125 80" stroke="#f59e0b" stroke-width="2.5" fill="none"/>
+              <polygon points="122,78 132,83 126,88" fill="#f59e0b"/>
+              <text x="195" y="116" fill="#f59e0b" font-size="11" font-weight="bold" text-anchor="middle">← 回饋狀態與獎勵 (Reward)</text>
+            </svg>
+          `;
+        case "overfitting":
+          return `
+            <svg class="w-full max-w-md h-36" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- 左邊：良好擬合 -->
+              <rect x="25" y="10" width="160" height="105" rx="8" fill="#0f172a" stroke="#334155"/>
+              <text x="105" y="26" fill="#10b981" font-size="11" font-weight="bold" text-anchor="middle">✓ 適當擬合 (Good Fit)</text>
+              <circle cx="50" cy="80" r="4" fill="#38bdf8"/>
+              <circle cx="80" cy="65" r="4" fill="#38bdf8"/>
+              <circle cx="110" cy="55" r="4" fill="#38bdf8"/>
+              <circle cx="150" cy="40" r="4" fill="#38bdf8"/>
+              <path d="M40 90 Q 95 65, 165 35" stroke="#10b981" stroke-width="2.5" fill="none"/>
+              
+              <!-- 右邊：過擬合 -->
+              <rect x="215" y="10" width="160" height="105" rx="8" fill="#0f172a" stroke="#f43f5e" stroke-width="1.5"/>
+              <text x="295" y="26" fill="#f43f5e" font-size="11" font-weight="bold" text-anchor="middle">✕ 過擬合 (死記硬背)</text>
+              <circle cx="240" cy="80" r="4" fill="#f43f5e"/>
+              <circle cx="265" cy="50" r="4" fill="#f43f5e"/>
+              <circle cx="295" cy="75" r="4" fill="#f43f5e"/>
+              <circle cx="330" cy="35" r="4" fill="#f43f5e"/>
+              <circle cx="355" cy="65" r="4" fill="#f43f5e"/>
+              <path d="M230 95 L 240 80 L 255 90 L 265 50 L 280 85 L 295 75 L 315 25 L 330 35 L 345 80 L 355 65" stroke="#fb7185" stroke-width="2" fill="none"/>
+            </svg>
+          `;
+        case "gradient":
+          return `
+            <svg class="w-full max-w-md h-36" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M60 20 Q 200 140, 340 20" stroke="#64748b" stroke-width="3" fill="none"/>
+              <text x="200" y="125" fill="#94a3b8" font-size="11" text-anchor="middle">最低誤差點 (全域最佳解)</text>
+              <circle cx="85" cy="40" r="8" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/>
+              <path d="M96 46 L 130 70" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="2 2"/>
+              <polygon points="135,74 125,72 130,64" fill="#f59e0b"/>
+              <circle cx="145" cy="80" r="6" fill="#fbbf24"/>
+              <path d="M155 85 L 180 97" stroke="#fbbf24" stroke-width="2"/>
+              <circle cx="200" cy="102" r="7" fill="#10b981" stroke="#fff" stroke-width="2"/>
+              <text x="135" y="32" fill="#fde68a" font-size="11" font-weight="bold">沿斜率向下邁步</text>
+            </svg>
+          `;
+        case "matrix":
+          return `
+            <svg class="w-full max-w-md h-36" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="130" y="25" width="100" height="40" fill="#065f46" stroke="#34d399"/>
+              <text x="180" y="44" fill="#ecfdf5" font-size="11" font-weight="bold" text-anchor="middle">TP (真陽性)</text>
+              <text x="180" y="58" fill="#6ee7b7" font-size="9" text-anchor="middle">預測有病，真有病</text>
+
+              <rect x="235" y="25" width="100" height="40" fill="#881337" stroke="#fb7185"/>
+              <text x="285" y="44" fill="#fff1f2" font-size="11" font-weight="bold" text-anchor="middle">FP (偽陽/誤報)</text>
+              <text x="285" y="58" fill="#fda4af" font-size="9" text-anchor="middle">預測有病，其實健康</text>
+
+              <rect x="130" y="70" width="100" height="40" fill="#881337" stroke="#fb7185"/>
+              <text x="180" y="89" fill="#fff1f2" font-size="11" font-weight="bold" text-anchor="middle">FN (偽陰/漏報)</text>
+              <text x="180" y="103" fill="#fda4af" font-size="9" text-anchor="middle">預測健康，其實有病</text>
+
+              <rect x="235" y="70" width="100" height="40" fill="#065f46" stroke="#34d399"/>
+              <text x="285" y="89" fill="#ecfdf5" font-size="11" font-weight="bold" text-anchor="middle">TN (真陰性)</text>
+              <text x="285" y="103" fill="#6ee7b7" font-size="9" text-anchor="middle">預測健康，真健康</text>
+              
+              <text x="65" y="50" fill="#94a3b8" font-size="11" font-weight="bold">預測為陽 ➔</text>
+              <text x="65" y="95" fill="#94a3b8" font-size="11" font-weight="bold">預測為陰 ➔</text>
+            </svg>
+          `;
+        case "activation":
+          return `
+            <svg class="w-full max-w-md h-36" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- ReLU 坐標軸 -->
+              <line x1="60" y1="105" x2="180" y2="105" stroke="#475569" stroke-width="2"/>
+              <line x1="120" y1="20" x2="120" y2="115" stroke="#475569" stroke-width="2"/>
+              <path d="M60 105 L 120 105 L 175 35" stroke="#22d3ee" stroke-width="3"/>
+              <circle cx="120" cy="105" r="4" fill="#22d3ee"/>
+              <text x="120" y="123" fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle">ReLU: max(0, x)</text>
+
+              <!-- Sigmoid 坐標軸 -->
+              <line x1="230" y1="105" x2="350" y2="105" stroke="#475569" stroke-width="2"/>
+              <line x1="290" y1="20" x2="290" y2="115" stroke="#475569" stroke-width="2"/>
+              <path d="M235 102 C 265 102, 275 80, 290 62 C 305 45, 315 28, 345 28" stroke="#a855f7" stroke-width="3" fill="none"/>
+              <text x="290" y="123" fill="#c084fc" font-size="11" font-weight="bold" text-anchor="middle">Sigmoid: 壓縮至 (0, 1)</text>
+            </svg>
+          `;
+        case "backprop":
+          return `
+            <svg class="w-full max-w-md h-36" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="70" cy="45" r="14" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+              <circle cx="70" cy="85" r="14" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+              <circle cx="200" cy="65" r="16" fill="#312e81" stroke="#818cf8" stroke-width="2"/>
+              <circle cx="330" cy="65" r="14" fill="#831843" stroke="#f43f5e" stroke-width="2"/>
+              
+              <!-- 前向連線 -->
+              <line x1="84" y1="48" x2="184" y2="62" stroke="#475569" stroke-width="1.5"/>
+              <line x1="84" y1="82" x2="184" y2="68" stroke="#475569" stroke-width="1.5"/>
+              <line x1="216" y1="65" x2="316" y2="65" stroke="#475569" stroke-width="1.5"/>
+              
+              <!-- 反向梯度紅虛線 -->
+              <path d="M316 55 C 275 40, 255 40, 218 55" stroke="#f43f5e" stroke-width="2.5" stroke-dasharray="3 3"/>
+              <polygon points="214,56 223,51 223,60" fill="#f43f5e"/>
+              <path d="M184 55 C 145 35, 120 35, 85 45" stroke="#f43f5e" stroke-width="2.5" stroke-dasharray="3 3"/>
+              <polygon points="82,46 91,41 90,50" fill="#f43f5e"/>
+              
+              <text x="200" y="25" fill="#fb7185" font-size="11" font-weight="bold" text-anchor="middle">← 連鎖律倒算梯度 (Backprop)</text>
+              <text x="200" y="115" fill="#38bdf8" font-size="11" text-anchor="middle">輸入層 ➔ 隱藏層 ➔ 輸出誤差</text>
+            </svg>
+          `;
+        case "cnn":
+          return `
+            <svg class="w-full max-w-md h-36" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- 原始輸入矩陣 -->
+              <rect x="30" y="25" width="70" height="70" fill="#1e293b" stroke="#64748b"/>
+              <rect x="30" y="25" width="35" height="35" fill="#38bdf8" fill-opacity="0.3" stroke="#38bdf8" stroke-width="1.5"/>
+              <text x="65" y="112" fill="#94a3b8" font-size="10" text-anchor="middle">輸入影像</text>
+              
+              <!-- 濾鏡箭頭 -->
+              <path d="M110 50 L 140 50" stroke="#38bdf8" stroke-width="2"/>
+              <polygon points="144,50 136,46 136,54" fill="#38bdf8"/>
+              <text x="127" y="40" fill="#38bdf8" font-size="9" text-anchor="middle">卷積滑動</text>
+
+              <!-- 特徵圖 -->
+              <rect x="150" y="32" width="55" height="55" fill="#0f172a" stroke="#06b6d4" stroke-width="1.5"/>
+              <circle cx="177" cy="59" r="14" fill="#0891b2" fill-opacity="0.4"/>
+              <text x="177" y="112" fill="#94a3b8" font-size="10" text-anchor="middle">特徵圖 (Feature)</text>
+
+              <!-- 池化縮小 -->
+              <path d="M215 50 L 245 50" stroke="#06b6d4" stroke-width="2"/>
+              <polygon points="249,50 241,46 241,54" fill="#06b6d4"/>
+              <text x="232" y="40" fill="#06b6d4" font-size="9" text-anchor="middle">池化壓縮</text>
+
+              <rect x="255" y="42" width="35" height="35" fill="#042f2e" stroke="#14b8a6" stroke-width="1.5"/>
+              <text x="272" y="112" fill="#94a3b8" font-size="10" text-anchor="middle">濃縮精華</text>
+              
+              <path d="M300 60 L 330 60" stroke="#14b8a6" stroke-width="2"/>
+              <text x="355" y="64" fill="#2dd4bf" font-size="12" font-weight="bold">「貓!」</text>
+            </svg>
+          `;
+        case "rnn":
+          return `
+            <svg class="w-full max-w-md h-36" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(60, 20)">
+                <rect x="0" y="30" width="45" height="40" rx="6" fill="#1e1b4b" stroke="#818cf8"/>
+                <text x="22" y="55" fill="#c7d2fe" font-size="11" text-anchor="middle">字詞1</text>
+                <path d="M48 50 L 70 50" stroke="#818cf8" stroke-width="2"/>
+                <polygon points="73,50 67,46 67,54" fill="#818cf8"/>
+              </g>
+              <g transform="translate(140, 20)">
+                <rect x="0" y="30" width="45" height="40" rx="6" fill="#31104b" stroke="#c084fc"/>
+                <text x="22" y="55" fill="#f3e8ff" font-size="11" text-anchor="middle">字詞2</text>
+                <!-- 記憶循環 -->
+                <path d="M22 26 C 22 5, 45 5, 45 26" stroke="#f472b6" stroke-width="2" fill="none"/>
+                <polygon points="22,28 18,20 26,20" fill="#f472b6"/>
+                <path d="M48 50 L 70 50" stroke="#c084fc" stroke-width="2"/>
+                <polygon points="73,50 67,46 67,54" fill="#c084fc"/>
+              </g>
+              <g transform="translate(220, 20)">
+                <rect x="0" y="30" width="45" height="40" rx="6" fill="#1e1b4b" stroke="#818cf8"/>
+                <text x="22" y="55" fill="#c7d2fe" font-size="11" text-anchor="middle">字詞3</text>
+              </g>
+              <text x="200" y="112" fill="#94a3b8" font-size="11" text-anchor="middle">隱藏狀態 (Hidden State) 帶著前文記憶一路往後傳送</text>
+            </svg>
+          `;
+        case "transformer":
+          return `
+            <svg class="w-full max-w-md h-36" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="40" y="35" width="60" height="30" rx="6" fill="#1e293b" stroke="#818cf8"/>
+              <text x="70" y="54" fill="#e0e7ff" font-size="11" text-anchor="middle">輸入詞彙</text>
+
+              <rect x="150" y="20" width="100" height="60" rx="8" fill="#312e81" stroke="#a78bfa" stroke-width="2"/>
+              <text x="200" y="44" fill="#f5f3ff" font-size="11" font-weight="bold" text-anchor="middle">Self-Attention</text>
+              <text x="200" y="62" fill="#c4b5fd" font-size="9" text-anchor="middle">Q, K, V 全局互聯</text>
+
+              <!-- 互聯光線 -->
+              <path d="M102 45 L 148 40" stroke="#818cf8" stroke-width="1.5"/>
+              <path d="M102 55 L 148 60" stroke="#818cf8" stroke-width="1.5"/>
+
+              <path d="M252 50 L 298 50" stroke="#a78bfa" stroke-width="2"/>
+              <polygon points="302,50 294,46 294,54" fill="#a78bfa"/>
+
+              <rect x="305" y="35" width="65" height="30" rx="6" fill="#064e3b" stroke="#34d399"/>
+              <text x="337" y="54" fill="#ecfdf5" font-size="11" text-anchor="middle">上下文理解</text>
+              
+              <text x="200" y="112" fill="#94a3b8" font-size="11" text-anchor="middle">打破時間先後順序，所有單詞瞬間相互計算關聯權重</text>
+            </svg>
+          `;
+        case "dropout":
+          return `
+            <svg class="w-full max-w-md h-36" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(80, 15)">
+                <circle cx="20" cy="20" r="11" fill="#38bdf8"/>
+                <circle cx="20" cy="50" r="11" fill="#38bdf8"/>
+                <circle cx="20" cy="80" r="11" fill="#38bdf8"/>
+                <text x="20" y="105" fill="#94a3b8" font-size="10" text-anchor="middle">正常連線</text>
+              </g>
+              <path d="M140 60 L 190 60" stroke="#94a3b8" stroke-width="2" stroke-dasharray="3 3"/>
+              <g transform="translate(230, 15)">
+                <circle cx="20" cy="20" r="11" fill="#38bdf8"/>
+                <!-- 被關閉的神經元 -->
+                <circle cx="20" cy="50" r="11" fill="#334155" stroke="#ef4444" stroke-width="2" stroke-dasharray="2 2"/>
+                <line x1="12" y1="42" x2="28" y2="58" stroke="#ef4444" stroke-width="2"/>
+                <line x1="28" y1="42" x2="12" y2="58" stroke="#ef4444" stroke-width="2"/>
+                <circle cx="20" cy="80" r="11" fill="#38bdf8"/>
+                <text x="20" y="105" fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle">隨機丟棄 50%</text>
+              </g>
+            </svg>
+          `;
+        default:
+          return `<div class="text-slate-400 text-sm">暫無圖解</div>`;
+      }
+    }
+
+    // 狀態變數
+    let activeCategory = 'all';
+    let searchQuery = '';
+
+    // DOM 元素引用
+    const cardsGrid = document.getElementById('cards-grid');
+    const emptyState = document.getElementById('empty-state');
+    const totalCountEl = document.getElementById('total-count');
+    const searchInput = document.getElementById('search-input');
+    const filterButtons = document.querySelectorAll('.category-btn');
+
+    // Modal 元素
+    const modal = document.getElementById('detail-modal');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+    const modalTitle = document.getElementById('modal-title');
+    const modalEn = document.getElementById('modal-en');
+    const modalBadge = document.getElementById('modal-badge');
+    const modalSummary = document.getElementById('modal-summary');
+    const modalDiagram = document.getElementById('modal-diagram-container');
+    const modalMetaphor = document.getElementById('modal-metaphor');
+    const modalPoints = document.getElementById('modal-points');
+
+    // 渲染卡片清單
+    function renderCards() {
+      const filtered = GLOSSARY_DATA.filter(item => {
+        const matchCategory = activeCategory === 'all' || item.category === activeCategory;
+        const query = searchQuery.trim().toLowerCase();
+        const matchSearch = query === '' || 
+          item.title.toLowerCase().includes(query) ||
+          item.en.toLowerCase().includes(query) ||
+          item.shortDesc.toLowerCase().includes(query) ||
+          item.metaphor.toLowerCase().includes(query);
+        return matchCategory && matchSearch;
+      });
+
+      totalCountEl.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        cardsGrid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      cardsGrid.innerHTML = filtered.map(item => `
+        <div 
+          data-id="${item.id}"
+          class="term-card group bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-indigo-400 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col justify-between cursor-pointer transform hover:-translate-y-1"
+        >
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-semibold ${item.badgeColor}">
+                ${item.categoryName}
+              </span>
+              <div class="w-8 h-8 rounded-full bg-slate-50 group-hover:bg-indigo-50 flex items-center justify-center text-slate-400 group-hover:text-indigo-600 transition-colors">
+                <i class="ph-bold ${item.icon} text-lg"></i>
+              </div>
+            </div>
+            
+            <h3 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors flex items-center">
+              ${item.title}
+            </h3>
+            <p class="text-xs font-mono text-slate-600 font-medium mb-3">${item.en}</p>
+            
+            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+              ${item.shortDesc}
+            </p>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-indigo-600 font-medium group-hover:translate-x-0.5 transition-transform">
+            <span>查看圖解與比喻</span>
+            <i class="ph-bold ph-arrow-right"></i>
+          </div>
+        </div>
+      `).join('');
+
+      // 重新綁定卡片點擊事件
+      document.querySelectorAll('.term-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const id = card.getAttribute('data-id');
+          openModal(id);
+        });
+      });
+    }
+
+    // 打開 Modal 視窗
+    function openModal(id) {
+      const item = GLOSSARY_DATA.find(x => x.id === id);
+      if (!item) return;
+
+      modalTitle.textContent = item.title;
+      modalEn.textContent = item.en;
+      modalBadge.textContent = item.categoryName;
+      modalBadge.className = `px-2.5 py-1 rounded-md text-xs font-semibold ${item.badgeColor}`;
+      modalSummary.textContent = item.shortDesc;
+      modalMetaphor.textContent = item.metaphor;
+
+      // 渲染 SVG 圖形
+      modalDiagram.innerHTML = generateDiagramSVG(item.svgType);
+
+      // 渲染重點條列
+      modalPoints.innerHTML = item.points.map(pt => `<li>${pt}</li>`).join('');
+
+      // 顯示 Modal
+      modal.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    // 關閉 Modal 視窗
+    function closeModal() {
+      modal.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    // 事件監聽配置
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalConfirmBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+
+    // 搜尋輸入監聽
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderCards();
+    });
+
+    // 類別標籤篩選切換
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => {
+          b.className = 'category-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200';
+        });
+        btn.className = 'category-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-indigo-600 text-white shadow-sm';
+        activeCategory = btn.getAttribute('data-cat');
+        renderCards();
+      });
+    });
+
+    // 初始化渲染
+    window.onload = function() {
+      renderCards();
+    };
+  </script>
+</body>
+</html>
